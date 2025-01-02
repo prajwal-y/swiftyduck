@@ -47,7 +47,7 @@ let trees = [];
 function drawInstructions() {
   ctx.fillStyle = "black";
   ctx.font = "20px Arial";
-  ctx.fillText("Press SPACE to flap. Avoid the trees!", 20, canvas.height / 2);
+  ctx.fillText("Tap or press SPACE to flap. Avoid the trees!", 20, canvas.height / 2);
 }
 
 function drawDuck() {
@@ -178,11 +178,28 @@ function flap() {
   duckSpeed = jumpForce;
 }
 
-// Event listener to make duck jump on spacebar
+// Handle both keyboard and touch/click events
+function handleFlap(event) {
+    // Prevent default behavior for touch events
+    if (event.type === 'touchstart') {
+        event.preventDefault();
+    }
+    if (!gameStarted) {
+        gameStarted = true;
+        gameOver = false;
+        score = 0;
+        trees = [];
+    }
+    if (!gameOver) {
+        duckSpeed = jumpForce;
+    }
+}
+
+// Add multiple event listeners
 window.addEventListener("keydown", (e) => {
-  if (e.code === "Space") {
-    flap();
-  }
+    if (e.code === "Space") {
+        handleFlap(e);
+    }
 });
 
 // Start the game
