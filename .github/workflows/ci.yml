@@ -14,23 +14,25 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v2
 
-      # 2. (Optional) Install dependencies if needed
+      # 2. Set up Node (for future use)
       - name: Set up Node
         uses: actions/setup-node@v2
         with:
           node-version: '16'
+          
+      # 3. Install dependencies (will be fast now since we have no dependencies)
       - name: Install dependencies
+        working-directory: ./projects/swiftyduck
         run: npm install
 
-      # 3. (Optional) Build step (if you’re using a bundler)
+      # 4. Build step
       - name: Build
+        working-directory: ./projects/swiftyduck
         run: npm run build
 
-      # 4. Deploy to GitHub Pages
+      # 5. Deploy to GitHub Pages
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist  # or your build output if you have one
-          # If you're not using a bundler, publish_dir might just be '.'
-          # or a specific directory containing your static files. 
+          publish_dir: ./projects/swiftyduck/dist 
