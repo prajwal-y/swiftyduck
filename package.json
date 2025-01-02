@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "A Flappy Bird-like game",
   "scripts": {
-    "build": "mkdir -p dist && cp projects/swiftyduck/{index.html,main.js,style.css} dist/"
+    "build": "mkdir -p dist && cp projects/swiftyduck/index.html dist/ && cp projects/swiftyduck/main.js dist/ && cp projects/swiftyduck/style.css dist/"
   },
   "author": "",
   "license": "ISC"
