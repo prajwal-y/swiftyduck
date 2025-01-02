@@ -201,6 +201,8 @@ window.addEventListener("keydown", (e) => {
         handleFlap(e);
     }
 });
+canvas.addEventListener('touchstart', handleFlap, { passive: false });
+canvas.addEventListener('click', handleFlap);
 
 // Start the game
 gameLoop();
