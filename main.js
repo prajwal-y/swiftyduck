@@ -3,6 +3,17 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
+// Resize the canvas to the window size at load
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+// You can also update your game constants if you want them relative to window size,
+// or handle window resizing like so:
+window.addEventListener('resize', () => {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+});
+
 // Game constants
 const duckSize = 32;
 const gravity = 0.5;
@@ -10,6 +21,18 @@ const jumpForce = -10;
 const treeGap = 150; // Opening in the trees
 const treeWidth = 50; // Width of the tree obstacles
 const treeFrequency = 100; // How often we spawn a new tree (frames)
+
+// 1) Load images for the duck and the tree (placeholder images shown here)
+const duckImg = new Image();
+duckImg.src = 'images/duck.webp';
+
+const treeImg = new Image();
+treeImg.src = 'images/tree.webp';
+
+// Flag to track whether the user has started the game
+let gameStarted = false;
+// Time until which collisions are ignored (in ms)
+let invincibleUntil = 0;
 
 // Game variables
 let duckY = canvas.height / 2;
@@ -21,9 +44,16 @@ let score = 0;
 // Each object: { x: number, topHeight: number }
 let trees = [];
 
+// Show instructions on the canvas
+function drawInstructions() {
+  ctx.fillStyle = "black";
+  ctx.font = "20px Arial";
+  ctx.fillText("Press SPACE to flap. Avoid the trees!", 20, canvas.height / 2);
+}
+
 function drawDuck() {
-  ctx.fillStyle = "yellow";
-  ctx.fillRect(50, duckY, duckSize, duckSize);
+  // Use an image instead of a yellow rectangle
+  ctx.drawImage(duckImg, 50, duckY, duckSize, duckSize);
 }
 
 function updateDuck() {
@@ -43,15 +73,24 @@ function spawnTree() {
   });
 }
 
+// Modify drawTrees to use the tree image
 function drawTrees() {
-  ctx.fillStyle = "green";
   trees.forEach((tree) => {
-    // Top tree
-    ctx.fillRect(tree.x, 0, treeWidth, tree.topHeight);
-    // Bottom tree
+    // Save the current context state
+    ctx.save();
+    
+    // Draw the top tree (flipped)
+    ctx.translate(tree.x, tree.topHeight);
+    ctx.scale(1, -1);
+    ctx.drawImage(treeImg, 0, 0, treeWidth, tree.topHeight);
+    
+    // Restore context for bottom tree
+    ctx.restore();
+    
+    // Draw the bottom tree normally
     const bottomY = tree.topHeight + treeGap;
     const bottomHeight = canvas.height - bottomY;
-    ctx.fillRect(tree.x, bottomY, treeWidth, bottomHeight);
+    ctx.drawImage(treeImg, tree.x, bottomY, treeWidth, bottomHeight);
   });
 }
 
@@ -68,6 +107,11 @@ function moveTrees() {
 }
 
 function checkCollisions() {
+  // Skip collision checks if we're still within the invincibility window
+  if (performance.now() < invincibleUntil) {
+    return;
+  }
+
   // Duck bounding box
   const duckLeft = 50;
   const duckRight = 50 + duckSize;
@@ -100,28 +144,38 @@ function resetGame() {
   trees = [];
   frameCount = 0;
   score = 0;
+  gameStarted = false;
 }
 
 function gameLoop() {
   requestAnimationFrame(gameLoop);
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // Spawn a new tree every X frames
-  if (frameCount % treeFrequency === 0) {
-    spawnTree();
+  if (!gameStarted) {
+    // Show instructions until the user starts the game
+    drawInstructions();
+  } else {
+    // Spawn a new tree every X frames
+    if (frameCount % treeFrequency === 0) {
+      spawnTree();
+    }
+    drawDuck();
+    updateDuck();
+
+    drawTrees();
+    moveTrees();
+    checkCollisions();
+
+    frameCount++;
   }
-
-  drawDuck();
-  updateDuck();
-
-  drawTrees();
-  moveTrees();
-  checkCollisions();
-
-  frameCount++;
 }
 
 function flap() {
+  if (!gameStarted) {
+    gameStarted = true;
+    // Set 3-second grace period
+    invincibleUntil = performance.now() + 500;
+  }
   duckSpeed = jumpForce;
 }
 
