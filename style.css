@@ -1,0 +1,12 @@
+body {
+  margin: 0;
+  padding: 0;
+  background: #ade1ff; /* Light sky color */
+  font-family: sans-serif;
+}
+
+canvas {
+  display: block;
+  margin: 0 auto;
+  background: #a9dbb8; /* A background that suggests a forest/field */
+}
