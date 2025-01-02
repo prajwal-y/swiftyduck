@@ -1,1 +1,10 @@
- 
+{
+  "name": "swiftyduck",
+  "version": "1.0.0",
+  "description": "A Flappy Bird-like game",
+  "scripts": {
+    "build": "mkdir -p dist && cp *.{html,js,css} dist/"
+  },
+  "author": "",
+  "license": "ISC"
+} 

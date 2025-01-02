@@ -22,12 +22,10 @@ jobs:
           
       # 3. Install dependencies (will be fast now since we have no dependencies)
       - name: Install dependencies
-        working-directory: projects/swiftyduck
         run: npm install
 
       # 4. Build step
       - name: Build
-        working-directory: projects/swiftyduck
         run: npm run build
 
       # 5. Deploy to GitHub Pages
@@ -35,4 +33,4 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: projects/swiftyduck/dist 
+          publish_dir: ./dist 
