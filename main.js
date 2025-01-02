@@ -25,7 +25,6 @@ const treeFrequency = 100; // How often we spawn a new tree (frames)
 // 1) Load images for the duck and the tree (placeholder images shown here)
 const duckImg = new Image();
 duckImg.src = 'images/duck.webp';
-
 const treeImg = new Image();
 treeImg.src = 'images/tree.webp';
 
